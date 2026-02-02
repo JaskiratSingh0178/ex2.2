@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dynamic Product Filter</title>
+
+<style>
+/* ===== GLOBAL ===== */
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f172a, #020617);
+    color: white;
+    padding: 30px;
+}
+
+/* ===== HEADER ===== */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* ===== FILTER ===== */
+.filter-box {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+select {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    outline: none;
+}
+
+/* ===== PRODUCT GRID ===== */
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    transition: all 0.3s ease;
+}
+
+/* ===== PRODUCT CARD ===== */
+.card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.price {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #38bdf8;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 24px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Product Filter</h1>
+
+<div class="filter-box">
+    <select id="sortSelect">
+        <option value="default">Sort By</option>
+        <option value="low">Price: Low to High</option>
+        <option value="high">Price: High to Low</option>
+        <option value="name">Name (A-Z)</option>
+    </select>
+</div>
+
+<div class="products" id="productContainer"></div>
+
+<script>
+const products = [
+    { name: "Laptop", price: 55000 },
+    { name: "Smartphone", price: 30000 },
+    { name: "Headphones", price: 3000 },
+    { name: "Keyboard", price: 2500 },
+    { name: "Monitor", price: 15000 },
+    { name: "Mouse", price: 1200 }
+];
+
+const container = document.getElementById("productContainer");
+const select = document.getElementById("sortSelect");
+
+function displayProducts(items) {
+    container.innerHTML = "";
+    items.forEach(product => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+            <h3>${product.name}</h3>
+            <p class="price">₹${product.price}</p>
+        `;
+        container.appendChild(card);
+    });
+}
+
+// Initial load
+displayProducts(products);
+
+select.addEventListener("change", () => {
+    let sortedProducts = [...products];
+
+    if (select.value === "low") {
+        sortedProducts.sort((a, b) => a.price - b.price);
+    } 
+    else if (select.value === "high") {
+        sortedProducts.sort((a, b) => b.price - a.price);
+    } 
+    else if (select.value === "name") {
+        sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    displayProducts(sortedProducts);
+});
+</script>
+
+</body>
+</html>
